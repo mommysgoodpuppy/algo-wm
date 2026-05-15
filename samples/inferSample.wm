@@ -1,0 +1,47 @@
+-- Infer sample: Workman equivalents of research/type-systems/algorithm_w/test_infer.ml.
+-- These are pending until the Algorithm W inferencer exists.
+-- Type expectations use Workman-style type spelling.
+
+let infer_01 = id; -- expect: <a>(a) => a
+let infer_02 = one; -- expect: Int
+let infer_03 = x; -- expect-error: variable x not found
+let infer_04 = { let x = x; x }; -- expect-error: variable x not found
+let infer_05 = { let x = id; x }; -- expect: <a>(a) => a
+let infer_06 = { let x = (y) => { y }; x }; -- expect: <a>(a) => a
+let infer_07 = (x) => { x }; -- expect: <a>(a) => a
+let infer_08 = (x) => { x }; -- expect: <int>(int) => int
+let infer_09 = pair; -- expect: <a, b>(a, b) => Pair<a, b>
+let infer_10 = pair; -- expect: <z, x>(x, z) => Pair<x, z>
+let infer_11 = (x) => { let y = (z) => { z }; y }; -- expect: <a, b>(a) => (b) => b
+let infer_12 = { let f = (x) => { x }; let id = (y) => { y }; eq(f, id) }; -- expect: Bool
+let infer_13 = { let f = (x) => { x }; let id = (y) => { y }; eq_curry(f)(id) }; -- expect: Bool
+let infer_14 = { let f = (x) => { x }; eq(f, succ) }; -- expect: Bool
+let infer_15 = { let f = (x) => { x }; eq_curry(f)(succ) }; -- expect: Bool
+let infer_16 = { let f = (x) => { x }; pair(f(one), f(true)) }; -- expect: Pair<Int, Bool>
+let infer_17 = (f) => { pair(f(one), f(true)) }; -- expect-error
+let infer_18 = { let f = (x, y) => { let a = eq(x, y); eq(x, y) }; f }; -- expect: <a>(a, a) => Bool
+let infer_19 = { let f = (x, y) => { let a = eq_curry(x)(y); eq_curry(x)(y) }; f }; -- expect: <a>(a, a) => Bool
+let infer_20 = id(id); -- expect: <a>(a) => a
+let infer_21 = choose((x, y) => { x }, (x, y) => { y }); -- expect: <a>(a, a) => a
+let infer_22 = choose_curry((x, y) => { x })((x, y) => { y }); -- expect: <a>(a, a) => a
+let infer_23 = { let x = id; let y = { let z = x(id); z }; y }; -- expect: <a>(a) => a
+let infer_24 = cons(id, nil); -- expect: <a>List<(a) => a>
+let infer_25 = cons_curry(id)(nil); -- expect: <a>List<(a) => a>
+let infer_26 = { let lst1 = cons(id, nil); let lst2 = cons(succ, lst1); lst2 }; -- expect: List<(Int) => Int>
+let infer_27 = cons_curry(id)(cons_curry(succ)(cons_curry(id)(nil))); -- expect: List<(Int) => Int>
+let infer_28 = plus(one, true); -- expect-error: cannot unify types Int and Bool
+let infer_29 = plus(one); -- expect-error: unexpected number of arguments
+let infer_30 = (x) => { let y = x; y }; -- expect: <a>(a) => a
+let infer_31 = (x) => { let y = { let z = x((x) => { x }); z }; y }; -- expect: <a, b>(((a) => a) => b) => b
+let infer_32 = (x) => { (y) => { let x = x(y); x(y) } }; -- expect: <a, b>((a) => (a) => b) => (a) => b
+let infer_33 = (x) => { let y = (z) => { x(z) }; y }; -- expect: <a, b>((a) => b) => (a) => b
+let infer_34 = (x) => { let y = (z) => { x }; y }; -- expect: <a, b>(a) => (b) => a
+let infer_35 = (x) => { (y) => { let x = x(y); (x) => { y(x) } } }; -- expect: <a, b, c>(((a) => b) => c) => ((a) => b) => (a) => b
+let infer_36 = (x) => { let y = x; y(y) }; -- expect-error: recursive types
+let infer_37 = (x) => { let y = (z) => { z }; y(y) }; -- expect: <a, b>(a) => (b) => b
+let infer_38 = (x) => { x(x) }; -- expect-error: recursive types
+let infer_39 = one(id); -- expect-error: expected a function
+let infer_40 = (f) => { let x = (g, y) => { let _ = g(y); eq(f, g) }; x }; -- expect: <a, b>((a) => b) => ((a) => b, a) => Bool
+let infer_41 = { let const = (x) => { (y) => { x } }; const }; -- expect: <a, b>(a) => (b) => a
+let infer_42 = { let apply = (f, x) => { f(x) }; apply }; -- expect: <a, b>((a) => b, a) => b
+let infer_43 = { let apply_curry = (f) => { (x) => { f(x) } }; apply_curry }; -- expect: <a, b>((a) => b) => (a) => b

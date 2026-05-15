@@ -1,0 +1,29 @@
+-- Parser sample: Workman equivalents of the valid parser tests in
+-- research/type-systems/algorithm_w/test_parser.ml.
+
+-- algorithm_w: a
+let parser_var = a;
+
+-- algorithm_w: f(x, y)
+let parser_call = f(x, y);
+
+-- algorithm_w: f(x)(y)
+let parser_curried_call = f(x)(y);
+
+-- algorithm_w: let f = fun x y -> g(x, y) in f(a, b)
+let parser_block_let = {
+  let f = (x, y) => { g(x, y) };
+  f(a, b)
+};
+
+-- algorithm_w: let x = a in let y = b in f(x, y)
+let parser_multi_let = {
+  let x = a;
+  let y = b;
+  f(x, y)
+};
+
+-- algorithm_w parser failure cases that do not belong in this valid whole-file
+-- fixture: empty input, whitespace call `f x`, missing semicolon/top-level body
+-- `let a = one`, comma expression `a, b`, assignment-looking expression `a = b`,
+-- empty tuple `()`, and OCaml-style `fun x, y -> y`.

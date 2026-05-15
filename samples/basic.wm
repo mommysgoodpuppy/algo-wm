@@ -1,0 +1,12 @@
+-- small Algorithm W playground surface
+let id: <a>(a) => a = (x) => { x };
+let makeVoid: () => Void = () => { void };
+let id(x) = x;
+let const(x, y) = x;
+let apply(f, x) = f(x);
+let choose(flag) =
+  if (flag) {
+    id(1)
+  } else {
+    apply(id, 2)
+  };

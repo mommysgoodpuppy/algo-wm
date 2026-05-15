@@ -1,0 +1,17 @@
+-- Lexer sample: tokens this front end should recognize.
+// Both canonical line comment forms are accepted.
+
+let integer = 12345;
+let float = 12.5e2;
+let string = "hello\nworld\x21";
+let byte = '\x41';
+let truth = true;
+let nothing = void;
+let hole = ?;
+
+let arithmetic(x, y) = x + y * 2 - 3 / 4 % 5;
+let comparison(x, y) = x == y || x != y && x <= y && x >= y;
+let pipeline(value, f) = value :> f;
+let projection(row, index) = row.value[index];
+let assertion(x) = x as Number;
+let generic: <a>(List<a>) => List<a> = (xs) => { xs };
