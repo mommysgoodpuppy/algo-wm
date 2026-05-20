@@ -60,7 +60,7 @@ fun string_of_ty ty : string =
                 implode [chr (97 + i mod 26)] ++
                 (if i >= 26 then Int.toString (i div 26) else "")
             end
-        
+
         fun f is_simple e = case e of
             TConst name => name
             | TApp(ty, ty_arg_list) =>
@@ -85,18 +85,31 @@ fun string_of_ty ty : string =
         in
             if is_simple then "(" ++ arrow_ty_str ++ ")" else arrow_ty_str
         end
-        | TVar {contents = Generic id} => begin
-            try
-            HashTable.find id_name_map id
-            with Not_found =>
-                let name = next_name () in
-                HashTable.insert id_name_map id name ;
-                name
-                end
-        
+            | TVar {contents = Generic id} =>
+                (case HashTable.find id_name_map id of
+                    SOME name => name
+                  | NONE =>
+                      let
+                        val name = next_name ()
+                      in
+                        HashTable.insert id_name_map (id, name);
+                        name
+                      end)
+        | TVar {contents = Unbound(id, _)} => "_" ++ string_of_int id
+        | TVar {contents = Link ty} => f is_simple ty
     in
-
-
-
+        let val ty_str = f false ty in
+        if !count > 0 then
+            let
+            val var_names = HashTable.fold (fn (v, acc) => v :: acc) [] id_name_map
+            
+            val sorted_vars = ListMergeSort.sort String.> var_names
+            
+            val vars_str = String.concatWith " " sorted_vars
+            in
+            "forall[" ^ vars_str ^ "] " ^ ty_str
+            end
+        else
+            ty_str
+            end
 end
-
