@@ -1,0 +1,16 @@
+version = 1
+
+[workspace]
+root = "millet.mlb"
+
+[language]
+fixity-across-files = true
+
+[language.val]
+"String.concatWith" = false
+"string_of_int" = false
+
+[language.structure]
+"HashString" = false
+"HashTable" = false
+"ListMergeSort" = false

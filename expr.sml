@@ -1,3 +1,25 @@
+require "utils.__lists";
+require "utils.__hashtable";
+
+fun mlworks_utils_require_probe () =
+    let
+        fun stringHash s =
+            let
+                fun loop (i, acc) =
+                    if i < 0 then acc
+                    else loop (i - 1, (acc + ord (String.sub (s, i))) mod 4096)
+            in
+                loop (size s - 1, 0)
+            end
+
+        val sorted = Lists_.msort String.< ["b", "a"]
+        val table : (string, int) HashTable_.HashTable =
+            HashTable_.new (8, op =, stringHash)
+        val _ = HashTable_.update (table, "answer", 42)
+    in
+        (sorted, HashTable_.tryLookup (table, "answer"))
+    end
+
 type name = string
 
 datatype expr =

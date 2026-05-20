@@ -1,3 +1,6 @@
+(* Millet-only project view. MLWorks itself should use sml.mlb. *)
+.millet/mlworks-generated.sml
+
 (* copied MLWorks utility units *)
 utils/lists.sml
 utils/_lists.sml
